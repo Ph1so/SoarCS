@@ -19,7 +19,7 @@ scopes = ['https://www.googleapis.com/auth/youtubepartner','https://www.googleap
 
 
 
-# This list of tracks should be replaced with the list of tracks from the spotify playlist
+# Demo; replace with info taken from spotify
 track_names = ["Me and the Birds", "The Perfect Girl", "Somebody That I Used to Know"]
 playlist_name = "Test Playlist"
 playlist_description = "Test Description"
@@ -44,7 +44,7 @@ def add_video_to_playlist(youtube, playlist_id, video_id):
         part='snippet',
         body=request_body
     )
-    print("video added to playlist")
+    request.execute()
 
 def create_playlist(youtube, title, description, privacy_status):
     request_body = {
@@ -62,7 +62,7 @@ def create_playlist(youtube, title, description, privacy_status):
     )
 
     response = request.execute()
-    return response
+    return response['id']
 
 def get_video_id(track_name):
   request = youtube.search().list(
