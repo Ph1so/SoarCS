@@ -15,12 +15,10 @@ spotify_client_secret = os.getenv('SPOTIFY_CLIENT_SECRET')
 
 yt_api_key = os.getenv('YT_API_KEY')
 yt_client_secrets_file = os.getenv('YT_CLIENT_SECRETS_FILE')
-scopes = ['https://www.googleapis.com/auth/youtubepartner','https://www.googleapis.com/auth/youtube', 'https://www.googleapis.com/auth/youtube.force-ssl']
-
-
+scopes = ['https://www.googleapis.com/auth/youtube']
 
 # Demo; replace with info taken from spotify
-track_names = ["Me and the Birds", "The Perfect Girl", "Somebody That I Used to Know"]
+track_names = ["Me and the Birds by Duster", "The Perfect Girl by Mareux", "Somebody That I Used to Know by Gotye", "Sphere by Creo"]
 playlist_name = "Test Playlist"
 playlist_description = "Test Description"
 
@@ -74,17 +72,22 @@ def get_video_id(track_name):
   response = request.execute()
   return response['items'][0]['id']['videoId']
 
-youtube = get_service()
+# Create a playlist given spotify tracks
+try:
+    youtube = get_service()
 
-video_ids = []
+    video_ids = []
 
-# Find the first youtube video that shares its name with the spotify track
-for track_name in track_names:
-  video_id = get_video_id(track_name)
-  video_ids.append(video_id)
+    # Find the first youtube video that shares its name with the spotify track
+    for track_name in track_names:
+        video_id = get_video_id(track_name)
+        video_ids.append(video_id)
 
-playlist_id = create_playlist(youtube=youtube, title=playlist_name, description=playlist_description, privacy_status="public")
+    playlist_id = create_playlist(youtube=youtube, title=playlist_name, description=playlist_description, privacy_status="public")
 
-for video_id in video_ids:
-   add_video_to_playlist(youtube=youtube, playlist_id=playlist_id, video_id=video_id)
+    # Add videos to playlist
+    for video_id in video_ids:
+        add_video_to_playlist(youtube=youtube, playlist_id=playlist_id, video_id=video_id)
 
+except HttpError:
+    print("Rate Limit Exceeded. Please try again later.")
